@@ -4,10 +4,12 @@
 // @namespace       http://furyu.hatenablog.com/
 // @author          furyu
 // @license         MIT
-// @version         0.1.15
+// @version         0.1.16
 // @include         http://twitter.com/*
 // @include         https://twitter.com/*
+// @include         https://x.com/*
 // @include         https://mobile.twitter.com/*
+// @include         https://mobile.x.com/*
 // @include         https://pbs.twimg.com/media/*
 // @include         https://tweetdeck.twitter.com/*
 // @grant           GM_getValue
@@ -19,6 +21,7 @@
 // @require         https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js
 // @require         https://cdn.jsdelivr.net/gh/sizzlemctwizzle/GM_config@43fd0fe4de1166f343883511e53546e87840aeaf/gm_config.js
 // @connect         twitter.com
+// @connect         x.com
 // @connect         twimg.com
 // @connect         furyutei.github.io
 // @description     Open images in original size on Twitter.
