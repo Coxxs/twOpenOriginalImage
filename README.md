@@ -1,7 +1,7 @@
 # Twitter View Original Images (twOpenOriginalImage)
 
 ## Install (Userscript)
-[twOpenOriginalImage.user.js](https://github.com/Coxxs/twOpenOriginalImage/blob/main/twOpenOriginalImage.user.js)
+[twOpenOriginalImage.user.js](https://github.com/Coxxs/twOpenOriginalImage/raw/main/twOpenOriginalImage.user.js)
 
 ## Version History
 
