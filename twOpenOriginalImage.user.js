@@ -1110,7 +1110,7 @@ const
         return async ( tweet_id ) => {
             let host = is_react_page() ? 'https://twitter.com/i/api' : 'https://api.twitter.com'
             if (/(^|\.)x.com$/.test(document.location.hostname)) {
-                host.replace('twitter.com', 'x.com')
+                host = host.replace('twitter.com', 'x.com')
             }
             const
                 url = `${host}/1.1/statuses/show.json?include_my_retweet=true&include_entities=true&trim_user=false&include_ext_alt_text=true&include_card_uri=true&tweet_mode=extended&id=${encodeURIComponent( tweet_id )}`,
