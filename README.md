@@ -1,7 +1,10 @@
 # Twitter View Original Images (twOpenOriginalImage)
 
-## Install (Userscript)
-[twOpenOriginalImage.user.js](https://github.com/Coxxs/twOpenOriginalImage/raw/main/twOpenOriginalImage.user.js)
+## Install
+
+1. Install [Violentmonkey](https://violentmonkey.github.io/) **or** [Tampermonkey](https://www.tampermonkey.net/) (or any other userscript manager)
+
+2. Install userscript: [twOpenOriginalImage.user.js](https://github.com/Coxxs/twOpenOriginalImage/raw/main/twOpenOriginalImage.user.js)
 
 ## Version History
 
