@@ -8,6 +8,9 @@
 
 ## Version History
 
+### 0.1.18
+Fix image not centered due to Twitter (X) update. ([#3](https://github.com/Coxxs/twOpenOriginalImage/issues/3))
+
 ### 0.1.17
 Support `x.com` domain.
 
