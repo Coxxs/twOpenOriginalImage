@@ -4,7 +4,7 @@
 // @namespace       http://furyu.hatenablog.com/
 // @author          furyu
 // @license         MIT
-// @version         0.1.17
+// @version         0.1.18
 // @include         http://twitter.com/*
 // @include         https://twitter.com/*
 // @include         https://x.com/*
@@ -2228,6 +2228,7 @@ function initialize( user_options ) {
                 img_style.maxWidth = '100%';
                 img_style.height = 'auto';
                 img_style.background = 'white';
+                img_style.display = 'inline';
                 
                 return img_template;
             } )(),
