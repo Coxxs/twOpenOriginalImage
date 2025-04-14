@@ -31,6 +31,8 @@
 // @contributionURL https://memo.furyutei.com/about#send_donation
 // @compatible      chrome+tampermonkey
 // @compatible      firefox+violentmonkey
+// @downloadURL     https://github.com/Coxxs/twOpenOriginalImage/raw/main/twOpenOriginalImage.user.js
+// @updateURL       https://github.com/Coxxs/twOpenOriginalImage/raw/main/twOpenOriginalImage.user.js
 // ==/UserScript==
 
 /*
