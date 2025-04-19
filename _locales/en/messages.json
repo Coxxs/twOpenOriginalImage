@@ -1,0 +1,95 @@
+{
+    "ext_title" : {
+        "message" : "Twitter View Original Images"
+    ,   "description" : "The title of the extension."
+    }
+,   "ext_short_name" : {
+        "message" : "TVOI"
+    ,   "description" : "The short version of the extension's name."
+    }
+,   "ext_description" : {
+        "message" : "Open images in original size on Twitter."
+    ,   "description" : "The description of the extension."
+    }
+,   "OPTIONS" : {
+        "message" : "Twitter View Original Images"
+    }
+,   "SET" : {
+        "message" : "set"
+    }
+,   "DEFAULT" : {
+        "message" : "Default"
+    }
+,   "ENABLED" : {
+        "message" : "Enabled"
+    }
+,   "DISABLED" : {
+        "message" : "Disabled"
+    }
+,   "START" : {
+        "message" : "Start"
+    }
+,   "STOP" : {
+        "message" : "Stop"
+    }
+,   "DEFAULT_ACTION_ON_CLICK_EVENT" : {
+        "message" : "Default action on click (another action is performed on alt and click)"
+    }
+,   "DISPLAY_ALL_IN_ONE_PAGE_DESCRIPTION" : {
+        "message" : "Display all in one page"
+    }
+,   "DISPLAY_ONE_PER_PAGE_DESCRIPTION" : {
+        "message" : "Display one image per page"
+    }
+,   "DISPLAY_OVERLAY" : {
+        "message" : "Overlay"
+    }
+,   "OVERRIDE_CLICK_EVENT" : {
+        "message" : "Display image on click thumbnail of tweet"
+    }
+,   "SWAP_IMAGE_URL" : {
+        "message" : "Replace images on timeline with original-sized ones"
+    }
+,   "DISPLAY_ORIGINAL_BUTTONS" : {
+        "message" : "Display buttons"
+    }
+,   "BUTTON_TEXT_HEADER" : {
+        "message" : "Button Text"
+    }
+,   "BUTTON_TEXT" : {
+        "message" : "Original"
+    }
+,   "DOWNLOAD_HELPER_IS_VALID_HEADER" : {
+        "message" : "Helper to download images"
+    }
+,   "ENABLED_ON_TWEETDECK" : {
+        "message" : "On TweetDeck"
+    }
+,   "OVERRIDE_GALLERY_FOR_TWEETDECK" : {
+        "message" : "TweetDeck: Replace image gallery feature"
+    }
+,   "DOWNLOAD_ORIGINAL_IMAGE" : {
+        "message" : "Download original image"
+    }
+,   "UNDER_SUSPENSION" : {
+        "message" : "Under suspension"
+    }
+,   "HIDE_DOWNLOAD_BUTTON_AUTOMATICALLY" : {
+        "message" : "Hide download button automatically (on Overlay mode)"
+    }
+,   "SUPPRESS_FILENAME_SUFFIX" : {
+        "message" : "Suppress suffix (e.g. -orig) of filename"
+    }
+,   "SAME_FILENAME_AS_IN_ZIP" : {
+        "message" : "Use same filename as in ZIP file when downloading alone"
+    }
+,   "TAB_SORTING" : {
+        "message" : "Tab sorting"
+    }
+,   "TAB_SORTING_ENABLED" : {
+        "message" : "[1][2][3][4]"
+    }
+,   "DOMATION" : {
+        "message" : "Your donation is welcome !"
+    }
+}

@@ -1,0 +1,95 @@
+{
+    "ext_title" : {
+        "message" : "Twitter 原寸びゅー"
+    ,   "description" : "The title of the extension."
+    }
+,   "ext_short_name" : {
+        "message" : "TVOI"
+    ,   "description" : "The short version of the extension's name."
+    }
+,   "ext_description" : {
+        "message" : "Web版Twitter・TweetDeckで、原寸画像の表示と保存が簡単にできるようになります。"
+    ,   "description" : "The description of the extension."
+    }
+,   "OPTIONS" : {
+        "message" : "Twitter 原寸びゅー"
+    }
+,   "SET" : {
+        "message" : "設定"
+    }
+,   "DEFAULT" : {
+        "message" : "デフォルトに戻す"
+    }
+,   "ENABLED" : {
+        "message" : "有効"
+    }
+,   "DISABLED" : {
+        "message" : "無効"
+    }
+,   "START" : {
+        "message" : "動作開始"
+    }
+,   "STOP" : {
+        "message" : "動作停止"
+    }
+,   "DEFAULT_ACTION_ON_CLICK_EVENT" : {
+        "message" : "クリック時のデフォルト動作（※[Alt]押下時は逆の動作）"
+    }
+,   "DISPLAY_ALL_IN_ONE_PAGE_DESCRIPTION" : {
+        "message" : "全ての画像を同一ページで開く"
+    }
+,   "DISPLAY_ONE_PER_PAGE_DESCRIPTION" : {
+        "message" : "画像を個別に開く"
+    }
+,   "DISPLAY_OVERLAY" : {
+        "message" : "オーバーレイ（タイムラインと同一のタブ上で開く）"
+    }
+,   "OVERRIDE_CLICK_EVENT" : {
+        "message" : "ツイート上のサムネイル画像クリックで開く"
+    }
+,   "SWAP_IMAGE_URL" : {
+        "message" : "タイムライン上の画像を原寸画像に置換"
+    }
+,   "DISPLAY_ORIGINAL_BUTTONS" : {
+        "message" : "画像を開くボタンの表示"
+    }
+,   "BUTTON_TEXT_HEADER" : {
+        "message" : "画像を開くボタンの文字列"
+    }
+,   "BUTTON_TEXT" : {
+        "message" : "原寸画像"
+    }
+,   "DOWNLOAD_HELPER_IS_VALID_HEADER" : {
+        "message" : "画像ダウンロードヘルパー"
+    }
+,   "ENABLED_ON_TWEETDECK" : {
+        "message" : "TweetDeck での動作"
+    }
+,   "OVERRIDE_GALLERY_FOR_TWEETDECK" : {
+        "message" : "TweetDeck: ギャラリー機能（画像ポップアップ）を置換"
+    }
+,   "DOWNLOAD_ORIGINAL_IMAGE" : {
+        "message" : "原寸画像を保存"
+    }
+,   "UNDER_SUSPENSION" : {
+        "message" : "停止中"
+    }
+,   "HIDE_DOWNLOAD_BUTTON_AUTOMATICALLY" : {
+        "message" : "ダウンロードボタンを自動的に隠す(オーバーレイ時)"
+    }
+,   "SUPPRESS_FILENAME_SUFFIX" : {
+        "message" : "ファイル名の接尾辞(-orig等)抑制"
+    }
+,   "SAME_FILENAME_AS_IN_ZIP" : {
+        "message" : "個別ダウンロード時のファイル名をZIP中のものと揃える"
+    }
+,   "TAB_SORTING" : {
+        "message" : "タブ並び替え"
+    }
+,   "TAB_SORTING_ENABLED" : {
+        "message" : "[1][2][3][4]"
+    }
+,   "DOMATION" : {
+        "message" : "贈り物 🎁 歓迎！"
+    }
+}

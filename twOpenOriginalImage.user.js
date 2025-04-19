@@ -23,7 +23,7 @@
 // @connect         twitter.com
 // @connect         x.com
 // @connect         twimg.com
-// @connect         furyutei.github.io
+// @connect         raw.githubusercontent.com
 // @description     Open images in original size on Twitter.
 // @description:ja  Web版Twitter・TweetDeckで、原寸画像の表示と保存が簡単にできるようになります。
 // @homepageURL     https://github.com/furyutei/twOpenOriginalImage/
@@ -5101,7 +5101,7 @@ async function init_gm_menu() {
             return [ 'ja', 'en' ].includes( LANGUAGE ) ? LANGUAGE : 'en';
         } )(),
         messages = await gm_xhr_promise( {
-            url : 'https://furyutei.github.io/twOpenOriginalImage/src/_locales/' + language + '/messages.json',
+            url : 'https://raw.githubusercontent.com/Coxxs/twOpenOriginalImage/refs/heads/main/_locales/' + language + '/messages.json',
         } )
         .then( response => {
             var message_map =  response.response;

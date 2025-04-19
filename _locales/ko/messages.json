@@ -1,0 +1,95 @@
+{
+    "ext_title" : {
+        "message" : "Twitter 원본 뷰어"
+    ,   "description" : "The title of the extension."
+    }
+,   "ext_short_name" : {
+        "message" : "TVOI"
+    ,   "description" : "The short version of the extension's name."
+    }
+,   "ext_description" : {
+        "message" : "Web버전 Twitter・TweetDeck에서 원본이미지 표시와 저장을 손쉽게 할 수 있습니다"
+    ,   "description" : "The description of the extension."
+    }
+,   "OPTIONS" : {
+        "message" : "Twitter 원본 뷰어"
+    }
+,   "SET" : {
+        "message" : "설정"
+    }
+,   "DEFAULT" : {
+        "message" : "최초 설정으로 복구"
+    }
+,   "ENABLED" : {
+        "message" : "예"
+    }
+,   "DISABLED" : {
+        "message" : "아니오"
+    }
+,   "START" : {
+        "message" : "동작 개시"
+    }
+,   "STOP" : {
+        "message" : "정지"
+    }
+,   "DEFAULT_ACTION_ON_CLICK_EVENT" : {
+        "message" : "마우스 클릭 기본 동작（※[Alt]를 누르면 역동작）"
+    }
+,   "DISPLAY_ALL_IN_ONE_PAGE_DESCRIPTION" : {
+        "message" : "모든 이미지를 같은 페이지에 열기"
+    }
+,   "DISPLAY_ONE_PER_PAGE_DESCRIPTION" : {
+        "message" : "이미지마다 따로 열기"
+    }
+,   "DISPLAY_OVERLAY" : {
+        "message" : "오버레이（타임라인과 같은 탭에서 열기）"
+    }
+,   "OVERRIDE_CLICK_EVENT" : {
+        "message" : "썸네일을 클릭하여 열기"
+    }
+,   "SWAP_IMAGE_URL" : {
+        "message" : "타임 라인의 이미지를 원본 크기의 이미지로 교체하십시오"
+    }
+,   "DISPLAY_ORIGINAL_BUTTONS" : {
+        "message" : "이미지 보기 버튼 표시"
+    }
+,   "BUTTON_TEXT_HEADER" : {
+        "message" : "이미지 보기 버튼 문자 설정"
+    }
+,   "BUTTON_TEXT" : {
+        "message" : "ORIGINAL"
+    }
+,   "DOWNLOAD_HELPER_IS_VALID_HEADER" : {
+        "message" : "이미지 저장 도우미"
+    }
+,   "ENABLED_ON_TWEETDECK" : {
+        "message" : "TweetDeck에서 동작"
+    }
+,   "OVERRIDE_GALLERY_FOR_TWEETDECK" : {
+        "message" : "TweetDeck: 갤러리 기능（이미지 팝업）치환"
+    }
+,   "DOWNLOAD_ORIGINAL_IMAGE" : {
+        "message" : "원본이미지로 저장"
+    }
+,   "UNDER_SUSPENSION" : {
+        "message" : "정지중"
+    }
+,   "HIDE_DOWNLOAD_BUTTON_AUTOMATICALLY" : {
+        "message" : "자동으로 다운로드 버튼 숨기기 (오버레이 모드에서)"
+    }
+,   "SUPPRESS_FILENAME_SUFFIX" : {
+        "message" : "파일 이름의 접미사 (예 : -orig)를 표시하지 않습니다"
+    }
+,   "SAME_FILENAME_AS_IN_ZIP" : {
+        "message" : "단독 다운로드 시 ZIP 파일과 동일한 파일명 사용"
+    }
+,   "TAB_SORTING" : {
+        "message" : "탭 정렬"
+    }
+,   "TAB_SORTING_ENABLED" : {
+        "message" : "[1][2][3][4]"
+    }
+,   "DOMATION" : {
+        "message" : "선물은 환영합니다 !"
+    }
+}
