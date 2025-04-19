@@ -8,6 +8,11 @@
 
 ## Version History
 
+### 0.1.19
+Fix settings menu ([#5](https://github.com/Coxxs/twOpenOriginalImage/issues/5))
+
+Fix script is not activated when first media is a video ([#4](https://github.com/Coxxs/twOpenOriginalImage/issues/4))
+
 ### 0.1.18
 Fix image not centered due to Twitter (X) update. ([#3](https://github.com/Coxxs/twOpenOriginalImage/issues/3))
 
