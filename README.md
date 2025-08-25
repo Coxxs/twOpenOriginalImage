@@ -2,7 +2,7 @@
 
 ## Install
 
-1. Install [Violentmonkey](https://violentmonkey.github.io/) **or** [Tampermonkey](https://www.tampermonkey.net/) (or any other userscript manager)
+1. Install [ScriptCat](https://docs.scriptcat.org/en/) **or** [Tampermonkey](https://www.tampermonkey.net/) **or** [Violentmonkey (mv2)](https://violentmonkey.github.io/) (or any other userscript manager)
 
 2. Install userscript: [twOpenOriginalImage.user.js](https://github.com/Coxxs/twOpenOriginalImage/raw/main/twOpenOriginalImage.user.js)
 
