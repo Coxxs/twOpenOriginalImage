@@ -8,19 +8,29 @@
 
 ## Version History
 
-### 0.1.19
-Fix settings menu ([#5](https://github.com/Coxxs/twOpenOriginalImage/issues/5))
+### 0.1.20
+- Allow customizing Actions on Click / <kbd>Alt</kbd>-Click / <kbd>Shift</kbd>-Click:
+    - Display all in one page (Default: Click)
+    - Display one image per page (Default: <kbd>Alt</kbd> + Click)
+    - *`New!`* Download selected image (Default: <kbd>Shift</kbd> + Click)
+    - *`New!`* Download all images
+    - *`New!`* Download as ZIP
 
-Fix script is not activated when first media is a video ([#4](https://github.com/Coxxs/twOpenOriginalImage/issues/4))
+- Remove dependency on external language files
+
+### 0.1.19
+- Fix settings menu ([#5](https://github.com/Coxxs/twOpenOriginalImage/issues/5))
+
+- Fix script is not activated when first media is a video ([#4](https://github.com/Coxxs/twOpenOriginalImage/issues/4))
 
 ### 0.1.18
-Fix image not centered due to Twitter (X) update. ([#3](https://github.com/Coxxs/twOpenOriginalImage/issues/3))
+- Fix image not centered due to Twitter (X) update. ([#3](https://github.com/Coxxs/twOpenOriginalImage/issues/3))
 
 ### 0.1.17
-Support `x.com` domain.
+- Support `x.com` domain.
 
 ### 0.1.16
-Final version by furyu.
+- Final version by furyu.
 
 ## License
 [MIT](https://github.com/Coxxs/twOpenOriginalImage/blob/main/twOpenOriginalImage.user.js)
