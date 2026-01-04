@@ -23,11 +23,10 @@
 // @connect         twitter.com
 // @connect         x.com
 // @connect         twimg.com
-// @connect         raw.githubusercontent.com
 // @description     Open images in original size on Twitter.
 // @description:ja  Web版Twitter・TweetDeckで、原寸画像の表示と保存が簡単にできるようになります。
-// @homepageURL     https://github.com/furyutei/twOpenOriginalImage/
-// @supportURL      https://github.com/furyutei/twOpenOriginalImage/issues
+// @homepageURL     https://github.com/Coxxs/twOpenOriginalImage/
+// @supportURL      https://github.com/Coxxs/twOpenOriginalImage/issues
 // @contributionURL https://memo.furyutei.com/about#send_donation
 // @compatible      chrome+tampermonkey
 // @compatible      firefox+violentmonkey
@@ -5152,51 +5151,12 @@ function initialize( user_options ) {
 } // end of initialize()
 
 
-function gm_xhr_promise( details ) {
-    if ( ! details ) {
-        details = {};
-    }
-    
-    details = Object.assign( {
-        method : 'GET',
-        timeout : 10000,
-        responseType : 'json',
-    }, details );
-    
-    return new Promise( ( resolve, reject ) => {
-        Object.assign( details, {
-            onload : resolve,
-            onerror : reject,
-            ontimeout : reject,
-        } );
-        GM_xmlhttpRequest(details);
-    } );
-} // end of gm_xhr_promise();
-
-
 async function init_gm_menu() {
     var user_options = Object.create( null ),
         language = ( () => {
             return [ 'ja', 'en' ].includes( LANGUAGE ) ? LANGUAGE : 'en';
         } )(),
-        messages = await gm_xhr_promise( {
-            url : 'https://raw.githubusercontent.com/Coxxs/twOpenOriginalImage/refs/heads/main/_locales/' + language + '/messages.json',
-        } )
-        .then( response => {
-            var message_map =  response.response;
-            
-            return Object.keys( message_map ).reduce( ( messages, key ) => {
-                messages[ key ] = message_map[ key ].message;
-                return messages;
-            }, {} );
-        } )
-        .catch( error => {
-            return null;
-        } );
-    
-    if ( messages === null ) {
-        return user_options;
-    }
+        messages = {};
     
     var config_id = `${SCRIPT_NAME}Config`,
         open_value_map,
@@ -5251,27 +5211,101 @@ async function init_gm_menu() {
     
     switch ( language ) {
         case 'ja' :
-            Object.assign( messages, {
-                SETTINGS : '設定',
-                CONTROL : '制御',
-                SAVE : '保存',
-                CLOSE : '閉じる',
-                SET_DEFAULT : 'デフォルトに戻す',
-                OPERATION : `${messages.ext_title}稼働`,
-                NOT_SAVED : '未保存',
-            } );
+            Object.assign(messages, {
+                "ext_title": "Twitter 原寸びゅー",
+                "ext_short_name": "TVOI",
+                "ext_description": "Web版Twitter・TweetDeckで、原寸画像の表示と保存が簡単にできるようになります。",
+                "OPTIONS": "Twitter 原寸びゅー",
+                "SET": "設定",
+                "DEFAULT": "デフォルトに戻す",
+                "ENABLED": "有効",
+                "DISABLED": "無効",
+                "START": "動作開始",
+                "STOP": "動作停止",
+                "DEFAULT_ACTION_ON_CLICK_EVENT": "クリック時の動作",
+                "DEFAULT_ACTION_ON_ALT_CLICK_EVENT": "Alt + クリック時の動作",
+                "DEFAULT_ACTION_ON_SHIFT_CLICK_EVENT": "Shift + クリック時の動作",
+                "DISPLAY_ALL_IN_ONE_PAGE_DESCRIPTION": "全ての画像を同一ページで開く",
+                "DISPLAY_ONE_PER_PAGE_DESCRIPTION": "画像を個別に開く",
+                "DOWNLOAD_IMAGES_DESCRIPTION": "全ての原寸画像を保存",
+                "DOWNLOAD_ONE_IMAGE_DESCRIPTION": "選択した画像を保存",
+                "DOWNLOAD_IMAGES_ZIP_DESCRIPTION": "ZIPで保存",
+                "DO_NOTHING_DESCRIPTION": "何もしない",
+                "DISPLAY_OVERLAY": "オーバーレイ（タイムラインと同一のタブ上で開く）",
+                "OVERRIDE_CLICK_EVENT": "ツイート上のサムネイル画像クリックで開く",
+                "SWAP_IMAGE_URL": "タイムライン上の画像を原寸画像に置換",
+                "DISPLAY_ORIGINAL_BUTTONS": "画像を開くボタンの表示",
+                "BUTTON_TEXT_HEADER": "画像を開くボタンの文字列",
+                "BUTTON_TEXT": "原寸画像",
+                "DOWNLOAD_HELPER_IS_VALID_HEADER": "画像ダウンロードヘルパー",
+                "ENABLED_ON_TWEETDECK": "TweetDeck での動作",
+                "OVERRIDE_GALLERY_FOR_TWEETDECK": "TweetDeck: ギャラリー機能（画像ポップアップ）を置換",
+                "DOWNLOAD_ORIGINAL_IMAGE": "原寸画像を保存",
+                "UNDER_SUSPENSION": "停止中",
+                "HIDE_DOWNLOAD_BUTTON_AUTOMATICALLY": "ダウンロードボタンを自動的に隠す(オーバーレイ時)",
+                "SUPPRESS_FILENAME_SUFFIX": "ファイル名の接尾辞(-orig等)抑制",
+                "SAME_FILENAME_AS_IN_ZIP": "個別ダウンロード時のファイル名をZIP中のものと揃える",
+                "TAB_SORTING": "タブ並び替え",
+                "TAB_SORTING_ENABLED": "[1][2][3][4]",
+                "DOMATION": "贈り物 🎁 歓迎！",
+
+                "SETTINGS": "設定",
+                "CONTROL": "制御",
+                "SAVE": "保存",
+                "CLOSE": "閉じる",
+                "SET_DEFAULT": "デフォルトに戻す",
+                "OPERATION": "Twitter 原寸びゅー稼働",
+                "NOT_SAVED": "未保存",
+            });
             break;
         
         default :
-            Object.assign( messages, {
-                SETTINGS : 'Settings',
-                CONTROL : 'Control',
-                SAVE : 'Save',
-                CLOSE : 'Close',
-                SET_DEFAULT : 'Reset to defaults',
-                OPERATION : `Running ${messages.ext_title}`,
-                NOT_SAVED : 'Not saved',
-            } );
+            Object.assign(messages, {
+                "ext_title": "Twitter View Original Images",
+                "ext_short_name": "TVOI",
+                "ext_description": "Open images in original size on Twitter.",
+                "OPTIONS": "Twitter View Original Images",
+                "SET": "set",
+                "DEFAULT": "Default",
+                "ENABLED": "Enabled",
+                "DISABLED": "Disabled",
+                "START": "Start",
+                "STOP": "Stop",
+                "DEFAULT_ACTION_ON_CLICK_EVENT": "Action on click",
+                "DEFAULT_ACTION_ON_ALT_CLICK_EVENT": "Action on Alt + click",
+                "DEFAULT_ACTION_ON_SHIFT_CLICK_EVENT": "Action on Shift + click",
+                "DISPLAY_ALL_IN_ONE_PAGE_DESCRIPTION": "Display all in one page",
+                "DISPLAY_ONE_PER_PAGE_DESCRIPTION": "Display one image per page",
+                "DOWNLOAD_IMAGES_DESCRIPTION": "Download all original images",
+                "DOWNLOAD_ONE_IMAGE_DESCRIPTION": "Download selected image",
+                "DOWNLOAD_IMAGES_ZIP_DESCRIPTION": "Download as ZIP",
+                "DO_NOTHING_DESCRIPTION": "Do nothing",
+                "DISPLAY_OVERLAY": "Overlay",
+                "OVERRIDE_CLICK_EVENT": "Display image on click thumbnail of tweet",
+                "SWAP_IMAGE_URL": "Replace images on timeline with original-sized ones",
+                "DISPLAY_ORIGINAL_BUTTONS": "Display buttons",
+                "BUTTON_TEXT_HEADER": "Button Text",
+                "BUTTON_TEXT": "Original",
+                "DOWNLOAD_HELPER_IS_VALID_HEADER": "Helper to download images",
+                "ENABLED_ON_TWEETDECK": "On TweetDeck",
+                "OVERRIDE_GALLERY_FOR_TWEETDECK": "TweetDeck: Replace image gallery feature",
+                "DOWNLOAD_ORIGINAL_IMAGE": "Download original image",
+                "UNDER_SUSPENSION": "Under suspension",
+                "HIDE_DOWNLOAD_BUTTON_AUTOMATICALLY": "Hide download button automatically (on Overlay mode)",
+                "SUPPRESS_FILENAME_SUFFIX": "Suppress suffix (e.g. -orig) of filename",
+                "SAME_FILENAME_AS_IN_ZIP": "Use same filename as in ZIP file when downloading alone",
+                "TAB_SORTING": "Tab sorting",
+                "TAB_SORTING_ENABLED": "[1][2][3][4]",
+                "DOMATION": "Your donation is welcome !",
+
+                "SETTINGS": "Settings",
+                "CONTROL": "Control",
+                "SAVE": "Save",
+                "CLOSE": "Close",
+                "SET_DEFAULT": "Reset to defaults",
+                "OPERATION": "Running Twitter View Original Images",
+                "NOT_SAVED": "Not saved",
+            });
             break;
     }
     
@@ -5395,7 +5429,7 @@ async function init_gm_menu() {
                 header_link.id = `${config_id}_header-title-link`;
                 header_link.textContent = config_header.textContent;
                 header_link.target = '_blank';
-                header_link.href = GM_info.script.homepage || 'https://github.com/furyutei/twOpenOriginalImage/';
+                header_link.href = GM_info.script.homepage || 'https://github.com/Coxxs/twOpenOriginalImage/';
                 
                 donation_link.textContent = messages.DOMATION;
                 donation_link.id = `${config_id}_header-donation-link`;
