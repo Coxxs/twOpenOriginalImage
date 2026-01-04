@@ -5536,17 +5536,14 @@ async function init_gm_menu() {
         events : {
             init : function () {
                 // Migration (Old text based settings to new keys)
-                var fields = [ 'DEFAULT_ACTION_ON_CLICK_EVENT', 'DEFAULT_ACTION_ON_ALT_CLICK_EVENT', 'DEFAULT_ACTION_ON_SHIFT_CLICK_EVENT' ];
+                let fields = [ 'DEFAULT_ACTION_ON_CLICK_EVENT', 'DEFAULT_ACTION_ON_ALT_CLICK_EVENT', 'DEFAULT_ACTION_ON_SHIFT_CLICK_EVENT' ];
                 
-                 fields.forEach( field => {
-                    var val = GM_config.get( field );
-                    var new_val = val;
+                fields.forEach( field => {
+                    let val = GM_config.get( field );
+                    let new_val = val;
                     
                     if ( ! [ 'display_all', 'display_one', 'download_all', 'download_one', 'download_zip', 'do_nothing' ].includes( val ) ) {
-                        // Fallback/Reset if unknown
-                        if ( field == 'DEFAULT_ACTION_ON_CLICK_EVENT' ) new_val = 'display_all';
-                        else if ( field == 'DEFAULT_ACTION_ON_ALT_CLICK_EVENT' ) new_val = 'display_one';
-                        else if ( field == 'DEFAULT_ACTION_ON_SHIFT_CLICK_EVENT' ) new_val = 'download_all';
+                        new_val = GM_config.fields[ field ].default;
                     }
                     
                     if ( val != new_val ) {
