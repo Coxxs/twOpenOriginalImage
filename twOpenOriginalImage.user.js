@@ -1119,6 +1119,7 @@ const
             fetch_json = is_extension() ? background_fetch_json : content_fetch_json;
             
         return async ( tweet_id ) => {
+            throw new Error("This api is disabled.")
             let host = is_react_page() ? 'https://twitter.com/i/api' : 'https://api.twitter.com'
             if (/(^|\.)x.com$/.test(document.location.hostname)) {
                 host = host.replace('twitter.com', 'x.com')
