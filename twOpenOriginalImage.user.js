@@ -2184,11 +2184,6 @@ function initialize( user_options ) {
                     'do_nothing'  : OPTIONS.BUTTON_HELP_DO_NOTHING
                 };
 
-                // Fallback for old settings or unexpected values (though migration should handle it)
-                if ( ! help_map[ OPTIONS.DEFAULT_ACTION_ON_CLICK_EVENT ] ) OPTIONS.DEFAULT_ACTION_ON_CLICK_EVENT = 'display_all';
-                if ( ! help_map[ OPTIONS.DEFAULT_ACTION_ON_ALT_CLICK_EVENT ] ) OPTIONS.DEFAULT_ACTION_ON_ALT_CLICK_EVENT = 'display_one';
-                if ( ! help_map[ OPTIONS.DEFAULT_ACTION_ON_SHIFT_CLICK_EVENT ] ) OPTIONS.DEFAULT_ACTION_ON_SHIFT_CLICK_EVENT = 'download';
-
                 button_title = escape_html( 
                     '[Click]: ' + help_map[ OPTIONS.DEFAULT_ACTION_ON_CLICK_EVENT ] + 
                     ' / ' + alt_text + '+[Click]: ' + help_map[ OPTIONS.DEFAULT_ACTION_ON_ALT_CLICK_EVENT ] +
