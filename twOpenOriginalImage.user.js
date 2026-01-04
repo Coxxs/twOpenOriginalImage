@@ -4160,6 +4160,85 @@ function initialize( user_options ) {
                 button.removeAttribute( 'data-event-ctrl-key' );
                 button.removeAttribute( 'data-event-shift-key' );
                 
+                // Shift+Click: Download all images one by one
+                if ( shift_key_pushed ) {
+                    ( async () => {
+                        // Validate all image URLs first
+                        for ( let ci = 0; ci < target_img_urls.length; ci ++ ) {
+                            target_img_urls[ ci ] = await find_valid_img_url( target_img_urls[ ci ] );
+                        }
+                        
+                        // Get tweet URL for filename prefix
+                        var tweet_link,
+                            tweet_url;
+                        
+                        if ( is_react_page() ) {
+                            tweet_link = get_tweet_link_on_react_twitter( tweet );
+                            tweet_url = tweet_link && tweet_link.href;
+                            if ( ! tweet_url ) {
+                                try {
+                                    tweet_url = tweet.querySelector( 'a[role="link"][href$="/photo/1"]' ).href.replace( /\/photo\/1$/, '' );
+                                }
+                                catch ( error ) {
+                                    log_error( 'cannot find tweet_url in tweet element', tweet );
+                                }
+                            }
+                        }
+                        else {
+                            tweet_link = tweet.querySelector( 'a[rel="url"][href^="https://twitter.com/"],a[rel="url"][href^="/"]' );
+                            tweet_url = tweet.getAttribute( 'data-permalink-path' ) || ( tweet_link && tweet_link.href );
+                        }
+                        
+                        var filename_prefix = tweet_url ? get_filename_prefix( tweet_url ) : '';
+                        
+                        // Download all images sequentially
+                        async function download_single_image( img_url, index ) {
+                            return new Promise( ( resolve, reject ) => {
+                                var img_filename = filename_prefix ? 
+                                    ( filename_prefix + '-img' + ( index + 1 ) + '.' + get_img_extension( img_url ) ) :
+                                    get_img_filename( img_url );
+                                
+                                if ( typeof GM_xmlhttpRequest == 'function' ) {
+                                    GM_xmlhttpRequest( {
+                                        method : 'GET',
+                                        url : img_url,
+                                        responseType : 'blob',
+                                        onload : function ( response ) {
+                                            save_blob( img_filename, response.response );
+                                            resolve();
+                                        },
+                                        onerror : function ( response ) {
+                                            log_error( 'Download failure:', img_url, img_filename, response.status, response.statusText );
+                                            resolve(); // Continue even on error
+                                        }
+                                    } );
+                                }
+                                else {
+                                    fetch( img_url )
+                                    .then( response => response.blob() )
+                                    .then( blob => {
+                                        save_blob( img_filename, blob );
+                                        resolve();
+                                    } )
+                                    .catch( error => {
+                                        log_error( 'Download failure:', img_url, img_filename, error );
+                                        resolve(); // Continue even on error
+                                    } );
+                                }
+                            } );
+                        }
+                        
+                        // Download images one by one
+                        for ( let ci = 0; ci < target_img_urls.length; ci ++ ) {
+                            await download_single_image( target_img_urls[ ci ], ci );
+                        }
+                        
+                        button_loading_container_style.display = 'none';
+                    } )();
+                    
+                    return false;
+                }
+                
                 if ( OPTIONS.DISPLAY_ALL_IN_ONE_PAGE ^ alt_key_pushed ) {
                     ( async () => {
                         if ( focused_img_url ) {
