@@ -130,7 +130,6 @@ var OPTIONS = {
     SHOW_IN_DETAIL_PAGE : true // true: 詳細ページで動作
 ,   SHOW_IN_TIMELINE : true // true: タイムラインで動作
 ,   ENABLED_ON_TWEETDECK : true // true: TweetDeck 上で有効
-,   DISPLAY_ALL_IN_ONE_PAGE : true // true: [Click] 全ての画像を同一ページで開く / [Alt]+[Click] 画像を個別に開く、false: 左記の逆の動作
 ,   DISPLAY_OVERLAY : true // true: 全ての画像を同一ページで開く際に(別タブで開かず)タイムライン上にオーバーレイする
 ,   OVERRIDE_CLICK_EVENT : true // true: ツイート中の画像クリックで原寸画像を開く
 ,   DISPLAY_ORIGINAL_BUTTONS : true // true: [原寸画像]ボタンを表示
@@ -245,6 +244,10 @@ switch ( LANGUAGE ) {
         OPTIONS.BUTTON_TEXT = '原寸画像';
         OPTIONS.BUTTON_HELP_DISPLAY_ALL_IN_ONE_PAGE = '全ての画像を同一ページで開く';
         OPTIONS.BUTTON_HELP_DISPLAY_ONE_PER_PAGE = '画像を個別に開く';
+        OPTIONS.BUTTON_HELP_DOWNLOAD_IMAGES = '全ての画像を保存';
+        OPTIONS.BUTTON_HELP_DOWNLOAD_ONE_IMAGE = '選択した画像を保存';
+        OPTIONS.BUTTON_HELP_DOWNLOAD_IMAGES_ZIP = 'ZIPで保存';
+        OPTIONS.BUTTON_HELP_DO_NOTHING = '何もしない';
         OPTIONS.DOWNLOAD_HELPER_BUTTON_TEXT = 'ダウンロード';
         OPTIONS.HELP_KEYPRESS_DISPLAY_IMAGES = '原寸画像を開く 【' + SCRIPT_NAME_JA + '】';
         OPTIONS.HELP_OVERLAY_SHORTCUT_MOVE_NEXT = '[j]次の画像';
@@ -267,6 +270,10 @@ switch ( LANGUAGE ) {
         OPTIONS.BUTTON_TEXT = 'Original';
         OPTIONS.BUTTON_HELP_DISPLAY_ALL_IN_ONE_PAGE = 'Display all in one page';
         OPTIONS.BUTTON_HELP_DISPLAY_ONE_PER_PAGE = 'Display one image per page';
+        OPTIONS.BUTTON_HELP_DOWNLOAD_IMAGES = 'Download all images';
+        OPTIONS.BUTTON_HELP_DOWNLOAD_ONE_IMAGE = 'Download selected image';
+        OPTIONS.BUTTON_HELP_DOWNLOAD_IMAGES_ZIP = 'Download as ZIP';
+        OPTIONS.BUTTON_HELP_DO_NOTHING = 'Do nothing';
         OPTIONS.DOWNLOAD_HELPER_BUTTON_TEXT = 'Download';
         OPTIONS.HELP_KEYPRESS_DISPLAY_IMAGES = 'Display original images (' + SCRIPT_NAME + ')';
         OPTIONS.HELP_OVERLAY_SHORTCUT_MOVE_NEXT = '[j]next';
@@ -2167,13 +2174,25 @@ function initialize( user_options ) {
                     alt_text = ( is_mac() ) ? '[option]' : '[Alt]',
                     button_title;
                 
-                if ( OPTIONS.DISPLAY_ALL_IN_ONE_PAGE ) {
-                    button_title = escape_html( '[Click]: ' + OPTIONS.BUTTON_HELP_DISPLAY_ALL_IN_ONE_PAGE + ' / ' + alt_text + '+[Click]: ' + OPTIONS.BUTTON_HELP_DISPLAY_ONE_PER_PAGE );
-                    
-                }
-                else {
-                    button_title = escape_html( '[Click]: ' + OPTIONS.BUTTON_HELP_DISPLAY_ONE_PER_PAGE + ' / ' + alt_text + '+[Click]: ' + OPTIONS.BUTTON_HELP_DISPLAY_ALL_IN_ONE_PAGE );
-                }
+                var help_map = {
+                    'display_all' : OPTIONS.BUTTON_HELP_DISPLAY_ALL_IN_ONE_PAGE,
+                    'display_one' : OPTIONS.BUTTON_HELP_DISPLAY_ONE_PER_PAGE,
+                    'download_all': OPTIONS.BUTTON_HELP_DOWNLOAD_IMAGES,
+                    'download_one': OPTIONS.BUTTON_HELP_DOWNLOAD_ONE_IMAGE,
+                    'download_zip': OPTIONS.BUTTON_HELP_DOWNLOAD_IMAGES_ZIP,
+                    'do_nothing'  : OPTIONS.BUTTON_HELP_DO_NOTHING
+                };
+
+                // Fallback for old settings or unexpected values (though migration should handle it)
+                if ( ! help_map[ OPTIONS.DEFAULT_ACTION_ON_CLICK_EVENT ] ) OPTIONS.DEFAULT_ACTION_ON_CLICK_EVENT = 'display_all';
+                if ( ! help_map[ OPTIONS.DEFAULT_ACTION_ON_ALT_CLICK_EVENT ] ) OPTIONS.DEFAULT_ACTION_ON_ALT_CLICK_EVENT = 'display_one';
+                if ( ! help_map[ OPTIONS.DEFAULT_ACTION_ON_SHIFT_CLICK_EVENT ] ) OPTIONS.DEFAULT_ACTION_ON_SHIFT_CLICK_EVENT = 'download';
+
+                button_title = escape_html( 
+                    '[Click]: ' + help_map[ OPTIONS.DEFAULT_ACTION_ON_CLICK_EVENT ] + 
+                    ' / ' + alt_text + '+[Click]: ' + help_map[ OPTIONS.DEFAULT_ACTION_ON_ALT_CLICK_EVENT ] +
+                    ' / [Shift]+[Click]: ' + help_map[ OPTIONS.DEFAULT_ACTION_ON_SHIFT_CLICK_EVENT ]
+                );
                 
                 button_container_template.setAttribute( 'data-original-title', button_title );
                 
@@ -4159,12 +4178,108 @@ function initialize( user_options ) {
                 button.removeAttribute( 'data-event-ctrl-key' );
                 button.removeAttribute( 'data-event-shift-key' );
                 
-                // Shift+Click: Download all images one by one
+                // Determine action
+                var action = OPTIONS.DEFAULT_ACTION_ON_CLICK_EVENT;
                 if ( shift_key_pushed ) {
+                    action = OPTIONS.DEFAULT_ACTION_ON_SHIFT_CLICK_EVENT;
+                }
+                else if ( alt_key_pushed ) {
+                    action = OPTIONS.DEFAULT_ACTION_ON_ALT_CLICK_EVENT;
+                }
+
+                if (! ['display_one', 'display_all', 'download_all', 'download_one', 'download_zip', 'do_nothing'].includes( action ) ) {
+                    action = 'display_one';
+                }
+
+                if ( action == 'do_nothing' ) {
+                    button_loading_container_style.display = 'none';
+                    return;
+                }
+
+                // TODO: Too many duplicated code, refactoring needed
+                if ( action == 'download_zip' ) {
                     ( async () => {
                         // Validate all image URLs first
                         for ( let ci = 0; ci < target_img_urls.length; ci ++ ) {
                             target_img_urls[ ci ] = await find_valid_img_url( target_img_urls[ ci ] );
+                        }
+                        
+                        var tweet_link,
+                            tweet_url,
+                            fullname_container,
+                            fullname,
+                            username_container,
+                            username,
+                            timestamp_container,
+                            timestamp_ms;
+                        
+                        // Extract Tweet Info
+                        if ( is_react_page() ) {
+                            tweet_link = get_tweet_link_on_react_twitter( tweet );
+                            tweet_url = tweet_link && tweet_link.href;
+                            
+                            if ( ! tweet_url ) {
+                                try {
+                                    tweet_url = tweet.querySelector( 'a[role="link"][href$="/photo/1"]' ).href.replace( /\/photo\/1$/, '' );
+                                }
+                                catch ( error ) {
+                                    log_error( 'cannot find tweet_url in tweet element', tweet );
+                                }
+                            }
+                            
+                            fullname_container = tweet.querySelector( 'a[role="link"] [dir="auto"] > span' );
+                            fullname = ( fullname_container ) ? get_text_from_element( fullname_container ).trim() : '';
+                            username_container = ( fullname_container ) ? search_ancestor_by_attribute( fullname_container, 'role', 'link' ) : null;
+                            username = ( username_container ) ? new URL( username_container.href ).pathname.replace( /^\//, '' ) : '';
+                        }
+                        else {
+                            tweet_link = tweet.querySelector( 'a[rel="url"][href^="https://twitter.com/"],a[rel="url"][href^="/"]' );
+                            tweet_url = tweet.getAttribute( 'data-permalink-path' ) || ( tweet_link && tweet_link.href );
+                            
+                            fullname_container = tweet.querySelector( '.fullname' );
+                            fullname = ( fullname_container ) ? get_text_from_element( fullname_container ).trim() : '';
+                            username_container = tweet.querySelector( '.username' );
+                            username = ( username_container ) ? username_container.textContent.trim() : '';
+                        }
+                        
+                        timestamp_container = tweet.querySelector( '*[data-time-ms], time[data-time]' );
+                        timestamp_ms = ( timestamp_container ) ? ( timestamp_container.getAttribute( 'data-time-ms' ) || timestamp_container.getAttribute( 'data-time' ) ) : '';
+
+                        if ( ! tweet_url ) {
+                             button_loading_container_style.display = 'none';
+                             return;
+                        }
+
+                        var tweet_info = {
+                            url : tweet_url,
+                            fullname : fullname,
+                            username : username,
+                            timestamp_ms : timestamp_ms,
+                            img_urls : target_img_urls,
+                            title : '' // title will be fetched in download_zip if needed
+                        };
+
+                        download_zip( JSON.stringify( tweet_info ) );
+                        
+                        button_loading_container_style.display = 'none';
+                    } )();
+                    
+                    return false;
+                }
+
+                if ( action == 'download_all' || action == 'download_one' ) {
+                    ( async () => {
+                         // Determine which URLs to download
+                        var urls_to_download = target_img_urls;
+                        if ( action == 'download_one' ) {
+                            if ( focused_img_url ) {
+                                urls_to_download = [ focused_img_url ];
+                            }
+                        }
+
+                        // Validate image URLs first
+                        for ( let ci = 0; ci < urls_to_download.length; ci ++ ) {
+                            urls_to_download[ ci ] = await find_valid_img_url( urls_to_download[ ci ] );
                         }
                         
                         // Get tweet URL for filename prefix
@@ -4228,8 +4343,13 @@ function initialize( user_options ) {
                         }
                         
                         // Download images one by one
-                        for ( let ci = 0; ci < target_img_urls.length; ci ++ ) {
-                            await download_single_image( target_img_urls[ ci ], ci );
+                        for ( let ci = 0; ci < urls_to_download.length; ci ++ ) {
+                            var index = ( action == 'download_one' && focused_img_url ) 
+                                        ? target_img_urls.indexOf( focused_img_url ) 
+                                        : ci;
+                            if ( index < 0 ) index = 0;
+
+                            await download_single_image( urls_to_download[ ci ], index );
                         }
                         
                         button_loading_container_style.display = 'none';
@@ -4238,7 +4358,7 @@ function initialize( user_options ) {
                     return false;
                 }
                 
-                if ( OPTIONS.DISPLAY_ALL_IN_ONE_PAGE ^ alt_key_pushed ) {
+                if ( action == 'display_all' ) {
                     ( async () => {
                         if ( focused_img_url ) {
                             focused_img_url = await find_valid_img_url( focused_img_url );
@@ -4296,8 +4416,11 @@ function initialize( user_options ) {
                             open_page( ( focused_img_url ) ? [ focused_img_url ] : target_img_urls, tweet_url, title );
                         }
                     } )();
+
+                    return false;
                 }
-                else {
+                
+                if ( action == 'display_one' ) {
                     // [覚書] find_valid_img_url()してから画像を開くとボタンを押してから開くまでに顕著なタイムラグが出てしまう
                     // →ひとまずformat=webpだけはname=4096x4096で開いておき、開いた先でname=origにリダイレクト
                     if ( focused_img_url ) {
@@ -4325,6 +4448,8 @@ function initialize( user_options ) {
                         } );
                     }
                     button_loading_container_style.display = 'none';
+
+                    return false;
                 }
                 return false;
             } );
@@ -5227,7 +5352,7 @@ async function init_gm_menu() {
                 "DEFAULT_ACTION_ON_SHIFT_CLICK_EVENT": "Shift + クリック時の動作",
                 "DISPLAY_ALL_IN_ONE_PAGE_DESCRIPTION": "全ての画像を同一ページで開く",
                 "DISPLAY_ONE_PER_PAGE_DESCRIPTION": "画像を個別に開く",
-                "DOWNLOAD_IMAGES_DESCRIPTION": "全ての原寸画像を保存",
+                "DOWNLOAD_IMAGES_DESCRIPTION": "全ての画像を保存",
                 "DOWNLOAD_ONE_IMAGE_DESCRIPTION": "選択した画像を保存",
                 "DOWNLOAD_IMAGES_ZIP_DESCRIPTION": "ZIPで保存",
                 "DO_NOTHING_DESCRIPTION": "何もしない",
@@ -5276,7 +5401,7 @@ async function init_gm_menu() {
                 "DEFAULT_ACTION_ON_SHIFT_CLICK_EVENT": "Action on Shift + click",
                 "DISPLAY_ALL_IN_ONE_PAGE_DESCRIPTION": "Display all in one page",
                 "DISPLAY_ONE_PER_PAGE_DESCRIPTION": "Display one image per page",
-                "DOWNLOAD_IMAGES_DESCRIPTION": "Download all original images",
+                "DOWNLOAD_IMAGES_DESCRIPTION": "Download all images",
                 "DOWNLOAD_ONE_IMAGE_DESCRIPTION": "Download selected image",
                 "DOWNLOAD_IMAGES_ZIP_DESCRIPTION": "Download as ZIP",
                 "DO_NOTHING_DESCRIPTION": "Do nothing",
@@ -5315,19 +5440,24 @@ async function init_gm_menu() {
         fields : {
             DEFAULT_ACTION_ON_CLICK_EVENT : {
                 label : messages.DEFAULT_ACTION_ON_CLICK_EVENT,
-                type : 'radio',
-                options : [
-                    messages.DISPLAY_ALL_IN_ONE_PAGE_DESCRIPTION,
-                    messages.DISPLAY_ONE_PER_PAGE_DESCRIPTION,
-                ],
-                default : messages.DISPLAY_ALL_IN_ONE_PAGE_DESCRIPTION,
-                save : false,
+                type : 'select',
+                options : [ 'display_all', 'display_one', 'download_one', 'download_all', 'download_zip' ],
+                default : 'display_all',
                 section : messages.SETTINGS,
             },
             
-            DISPLAY_ALL_IN_ONE_PAGE : {
-                type : 'checkbox',
-                default : OPTIONS.DISPLAY_ALL_IN_ONE_PAGE,
+            DEFAULT_ACTION_ON_ALT_CLICK_EVENT : {
+                label : messages.DEFAULT_ACTION_ON_ALT_CLICK_EVENT,
+                type : 'select',
+                options : [ 'display_all', 'display_one', 'download_one', 'download_all', 'download_zip', 'do_nothing' ],
+                default : 'display_one',
+            },
+
+            DEFAULT_ACTION_ON_SHIFT_CLICK_EVENT : {
+                label : messages.DEFAULT_ACTION_ON_SHIFT_CLICK_EVENT,
+                type : 'select',
+                options : [ 'display_all', 'display_one', 'download_one', 'download_all', 'download_zip', 'do_nothing' ],
+                default : 'download_one',
             },
             
             DISPLAY_OVERLAY : {
@@ -5405,7 +5535,24 @@ async function init_gm_menu() {
         },
         events : {
             init : function () {
-                GM_config.set( 'DEFAULT_ACTION_ON_CLICK_EVENT', GM_config.get( 'DISPLAY_ALL_IN_ONE_PAGE' ) ? messages.DISPLAY_ALL_IN_ONE_PAGE_DESCRIPTION : messages.DISPLAY_ONE_PER_PAGE_DESCRIPTION );
+                // Migration (Old text based settings to new keys)
+                var fields = [ 'DEFAULT_ACTION_ON_CLICK_EVENT', 'DEFAULT_ACTION_ON_ALT_CLICK_EVENT', 'DEFAULT_ACTION_ON_SHIFT_CLICK_EVENT' ];
+                
+                 fields.forEach( field => {
+                    var val = GM_config.get( field );
+                    var new_val = val;
+                    
+                    if ( ! [ 'display_all', 'display_one', 'download_all', 'download_one', 'download_zip', 'do_nothing' ].includes( val ) ) {
+                        // Fallback/Reset if unknown
+                        if ( field == 'DEFAULT_ACTION_ON_CLICK_EVENT' ) new_val = 'display_all';
+                        else if ( field == 'DEFAULT_ACTION_ON_ALT_CLICK_EVENT' ) new_val = 'display_one';
+                        else if ( field == 'DEFAULT_ACTION_ON_SHIFT_CLICK_EVENT' ) new_val = 'download_all';
+                    }
+                    
+                    if ( val != new_val ) {
+                        GM_config.set( field, new_val );
+                    }
+                });
             },
             
             open : function ( frame_doc, frame_win, frame ) {
@@ -5414,9 +5561,6 @@ async function init_gm_menu() {
                 frame.style.border = 'none';
                 frame.style.zIndex = 99999;
                 
-                GM_config.fields[ 'DEFAULT_ACTION_ON_CLICK_EVENT' ].node.addEventListener( 'change', event => {
-                    GM_config.set( 'DISPLAY_ALL_IN_ONE_PAGE', GM_config.get( 'DEFAULT_ACTION_ON_CLICK_EVENT', true ) == messages.DISPLAY_ALL_IN_ONE_PAGE_DESCRIPTION );
-                }, false );
                 
                 if ( is_firefox() ) {
                     GM_config.fields[ 'DISPLAY_OVERLAY' ].node.setAttribute( 'disabled', 'disabled' );
@@ -5456,6 +5600,23 @@ async function init_gm_menu() {
                 
                 [ ... frame_doc.querySelectorAll( '.section_header' ) ].map( section_header => section_header.classList.remove( 'center' ) );
                 
+                // Customize Options Display
+                [ 'DEFAULT_ACTION_ON_CLICK_EVENT', 'DEFAULT_ACTION_ON_ALT_CLICK_EVENT', 'DEFAULT_ACTION_ON_SHIFT_CLICK_EVENT' ].forEach( function ( field_id ) {
+                    var field = GM_config.fields[ field_id ];
+                     if ( field && field.node ) {
+                        var options = field.node.options;
+                        for ( var i = 0; i < options.length; i ++ ) {
+                           var opt = options[ i ];
+                           if ( opt.value == 'display_all' ) opt.textContent = messages.DISPLAY_ALL_IN_ONE_PAGE_DESCRIPTION;
+                           else if ( opt.value == 'display_one' ) opt.textContent = messages.DISPLAY_ONE_PER_PAGE_DESCRIPTION;
+                           else if ( opt.value == 'download_all' ) opt.textContent = messages.DOWNLOAD_IMAGES_DESCRIPTION;
+                           else if ( opt.value == 'download_one' ) opt.textContent = messages.DOWNLOAD_ONE_IMAGE_DESCRIPTION;
+                           else if ( opt.value == 'download_zip' ) opt.textContent = messages.DOWNLOAD_IMAGES_ZIP_DESCRIPTION;
+                           else if ( opt.value == 'do_nothing' ) opt.textContent = messages.DO_NOTHING_DESCRIPTION;
+                        }
+                    } 
+                });
+
                 [ ... frame_doc.querySelectorAll( 'input[type="radio"]' ) ].map( radio_element => {
                     var next_element = radio_element.nextElementSibling;
                     if ( next_element && next_element.tagName == 'LABEL' ) {
@@ -5490,7 +5651,12 @@ async function init_gm_menu() {
             },
             
             reset : function () {
-                GM_config.set( 'DISPLAY_ALL_IN_ONE_PAGE', GM_config.get( 'DEFAULT_ACTION_ON_CLICK_EVENT', true ) == messages.DISPLAY_ALL_IN_ONE_PAGE_DESCRIPTION );
+                [ 'DEFAULT_ACTION_ON_CLICK_EVENT', 'DEFAULT_ACTION_ON_ALT_CLICK_EVENT', 'DEFAULT_ACTION_ON_SHIFT_CLICK_EVENT' ].forEach( function ( field_id ) {
+                    var field = GM_config.fields[ field_id ];
+                    if ( field && field.node && field.default !== undefined ) {
+                        field.node.value = field.default;
+                    }
+                } );
                 update_save_status();
             },
             
@@ -5588,10 +5754,6 @@ async function init_gm_menu() {
             
             #${config_id} .config_var > div[id] {
                 display: inline-block;
-            }
-            
-            #${config_id}_DISPLAY_ALL_IN_ONE_PAGE_var {
-                display: none;
             }
         `,
     } );
