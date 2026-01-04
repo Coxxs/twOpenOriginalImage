@@ -8,13 +8,18 @@
 
 ## Version History
 
+### 0.1.21
+- Update dependencies
+
+- Disable removed API
+
 ### 0.1.20
 - Allow customizing Actions on Click / <kbd>Alt</kbd>-Click / <kbd>Shift</kbd>-Click:
     - Display all in one page (Default: Click)
     - Display one image per page (Default: <kbd>Alt</kbd> + Click)
-    - *`New!`* Download selected image (Default: <kbd>Shift</kbd> + Click)
-    - *`New!`* Download all images
-    - *`New!`* Download as ZIP
+    - Download selected image (Default: <kbd>Shift</kbd> + Click)
+    - Download all images
+    - Download as ZIP
 
 - Remove dependency on external language files
 
