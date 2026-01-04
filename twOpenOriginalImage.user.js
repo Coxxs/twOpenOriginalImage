@@ -12,14 +12,14 @@
 // @include         https://mobile.x.com/*
 // @include         https://pbs.twimg.com/media/*
 // @include         https://tweetdeck.twitter.com/*
-// @grant           GM_getValue
-// @grant           GM_setValue
-// @grant           GM_registerMenuCommand
+// @grant           GM.getValue
+// @grant           GM.setValue
+// @grant           GM.registerMenuCommand
 // @grant           GM_xmlhttpRequest
 // @grant           GM_download
-// @require         https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.4/jszip.min.js
-// @require         https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js
-// @require         https://cdn.jsdelivr.net/gh/sizzlemctwizzle/GM_config@43fd0fe4de1166f343883511e53546e87840aeaf/gm_config.js
+// @require         https://cdnjs.cloudflare.com/ajax/libs/jszip/3.9.1/jszip.min.js
+// @require         https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js
+// @require         https://cdn.jsdelivr.net/gh/sizzlemctwizzle/GM_config@b3ac68b00ba88f7817270ca0ccd28424282a7973/gm_config.js
 // @connect         twitter.com
 // @connect         x.com
 // @connect         twimg.com
@@ -5434,6 +5434,12 @@ async function init_gm_menu() {
             });
             break;
     }
+
+    let resolveInit;
+
+    const initPromise = new Promise(resolve => {
+        resolveInit = resolve;
+    });
     
     GM_config.init( {
         id : config_id,
@@ -5551,6 +5557,8 @@ async function init_gm_menu() {
                         GM_config.set( field, new_val );
                     }
                 });
+
+                resolveInit();
             },
             
             open : function ( frame_doc, frame_win, frame ) {
@@ -5755,8 +5763,10 @@ async function init_gm_menu() {
             }
         `,
     } );
+
+    await initPromise;
     
-    GM_registerMenuCommand( messages.SETTINGS, () => GM_config.open() );
+    GM.registerMenuCommand( messages.SETTINGS, () => GM_config.open() );
     
     Object.assign( user_options, get_config_value_map() );
     
