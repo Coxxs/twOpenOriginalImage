@@ -8,6 +8,9 @@
 
 ## Version History
 
+### 0.1.22
+- Handle URLs like `/media/example.jpg?name=orig` correctly
+
 ### 0.1.21
 - Update dependencies
 
