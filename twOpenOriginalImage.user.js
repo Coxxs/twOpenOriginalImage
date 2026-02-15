@@ -4,7 +4,7 @@
 // @namespace       http://furyu.hatenablog.com/
 // @author          furyu
 // @license         MIT
-// @version         0.1.21
+// @version         0.1.22
 // @include         http://twitter.com/*
 // @include         https://twitter.com/*
 // @include         https://x.com/*
@@ -779,6 +779,12 @@ function normalize_img_url( source_url ) {
         name = url_info.query_map.name;
     
     if ( ! format ) {
+        // Handle URLs like /media/example.jpg?name=orig
+        if ( name && base_url.match( /^(.*)\.\w+$/ ) ) {
+            if ( [ 'thumb', 'small', 'medium', 'large', 'orig', '900x900' ].indexOf( name ) >= 0 ) {
+                return base_url + ':' + name;
+            }
+        }
         return source_url;
     }
     
